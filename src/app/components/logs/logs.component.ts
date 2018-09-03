@@ -19,4 +19,9 @@ export class LogsComponent implements OnInit {
   onSelect(log: Log) {
     this.logService.setFormLog(log);
   }
+  onDelete(log: Log) {
+    if (confirm('Are you sure you want to delete the log?')) {
+      this.logService.deleteLog(log);
+    }
+  }
 }
