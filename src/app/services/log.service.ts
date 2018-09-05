@@ -44,11 +44,21 @@ export class LogService {
   }
 
   getLogs(): Observable<Log[]> {
-    return of(this.logs);
+    if (localStorage.getItem('logs')) {
+      this.logs = JSON.parse(localStorage.getItem('logs'));
+    }
+    return of(this.logs.sort((a, b) => b.date - a.date));
+  }
+
+  addToLocalStorage() {
+    localStorage.setItem('logs', JSON.stringify(this.logs));
   }
 
   addLog(log: Log) {
     this.logs.unshift(log);
+
+    // Add to local storage
+    this.addToLocalStorage();
   }
 
   updateLog(log: Log) {
@@ -58,6 +68,9 @@ export class LogService {
       }
     });
     this.logs.unshift(log);
+
+    // Update to local storage
+    this.addToLocalStorage();
   }
 
   deleteLog(log: Log) {
@@ -66,6 +79,9 @@ export class LogService {
         this.logs.splice(i, 1);
       }
     });
+
+    // Delete from local storage
+    this.addToLocalStorage();
   }
   clearState() {
     this.stateSource.next(true);
